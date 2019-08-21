@@ -4,10 +4,28 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/profile/implicit">Profile (implicit)</router-link> |
       <router-link to="/profile/authorization_code">Profile (pkce)</router-link>
+      <span v-if="hasIdToken">
+        | <router-link to="/logout">Logout</router-link>
+      </span>
     </div>
     <router-view/>
   </div>
 </template>
+
+<script>
+import { getIdToken } from './auth';
+
+export default {
+  data() {
+    return {
+      hasIdToken: false
+    }
+  },
+  mounted: async function () {
+    this.hasIdToken = await getIdToken();
+  }
+}
+</script>
 
 <style>
 #app {

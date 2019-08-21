@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Home from '@/views/Home.vue'
 import Profile from '@/views/Profile.vue'
 
-import { callback, validateAccess } from './auth'
+import { validateAccess, callback, logout } from './auth'
 
 Vue.use(Router)
 
@@ -15,5 +15,6 @@ export default new Router({
     { path: '/callback', component: callback },
     { path: '/profile', redirect: '/profile/authorization_code' },
     { path: '/profile/:mode', beforeEnter: validateAccess, component: Profile },
+    { path: '/logout', component: logout }
   ]
 })

@@ -34,12 +34,26 @@ export function validateAccess(to, from, next) {
     .catch(console.error);
 }
 
-export async function loginOkta(grantType) {
+export function loginOkta(grantType) {
     oktaAuth.options.grantType = grantType;
     oktaAuth.token.getWithRedirect({
         responseType: responseTypes[grantType],
         scopes: ['openid', 'profile', 'email']
     });
+}
+
+export function logout() {
+    getIdToken()
+    .then(function (token) {
+        if (token) {
+            var idToken = token.idToken;
+            oktaAuth.tokenManager.clear();
+            window.location.href = ISSUER + '/v1/logout?client_id=' + CLIENT_ID + 
+                '&id_token_hint=' + idToken + '&post_logout_redirect_uri=' + window.location.origin 
+        } else {
+            router.push('/');
+        }
+    })
 }
 
 export function callback() {
