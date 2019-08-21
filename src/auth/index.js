@@ -1,25 +1,51 @@
 import OktaAuth from '@okta/okta-auth-js';
 import router from '../router';
 
-const ISSUER = '';
-const CLIENT_ID = ''
-const REDIRECT_URL = window.location.origin + '/redirect';
+const ISSUER = 'https://{yourOktaDomain}/oauth2/default';
+const CLIENT_ID = '{yourSPAAppClientId}';
+const REDIRECT_URL = window.location.origin + '/callback';
+
+const AUTH_CODE_GRANT_TYPE = 'authorization_code';
+const IMPLICIT_GRANT_TYPE = 'implicit';
+
+const responseTypes = {};
+responseTypes[AUTH_CODE_GRANT_TYPE] = 'code';
+responseTypes[IMPLICIT_GRANT_TYPE] =  ['id_token', 'token'];
 
 const oktaAuth = new OktaAuth({
     issuer: ISSUER,
     clientId: CLIENT_ID,
-    redirectUri: REDIRECT_URL,
-    grantType:  'authorization_code'
+    redirectUri: REDIRECT_URL
 });
 
-export async function loginOkta() {
+export function validateAccess(to, from, next) {
+    getIdToken()
+    .then(function(token) {
+        if (token) {
+            next();
+        } else {
+            oktaAuth.tokenManager.clear();
+            // implicit or pkce?
+            var grantParam = to.path.substring(to.path.lastIndexOf('/') + 1);
+            var grantType = (responseTypes[grantParam]) ? grantParam : AUTH_CODE_GRANT_TYPE
+            loginOkta(grantType);
+        }          
+    })
+    .catch(console.error);
+}
+
+export async function loginOkta(grantType) {
+    oktaAuth.options.grantType = grantType;
     oktaAuth.token.getWithRedirect({
-        responseType: 'code',
-        scopes: ['openid', 'profile', 'email'],
+        responseType: responseTypes[grantType],
+        scopes: ['openid', 'profile', 'email']
     });
 }
 
-export async function redirect() {
+export function callback() {
+    // detect code
+    var grantType = (window.location.href.indexOf('code=') > 0) ? 
+        AUTH_CODE_GRANT_TYPE : IMPLICIT_GRANT_TYPE;
     oktaAuth.token.parseFromUrl()
     .then((tokens) => {
         tokens.forEach((token) => {
@@ -29,20 +55,7 @@ export async function redirect() {
                 oktaAuth.tokenManager.add('access_token', token);
             }
         });
-        router.push('/profile');
-    })
-    .catch(console.error);
-}
-
-export function validateAccess(to, from, next) {
-    getIdToken()
-    .then(function(token) {
-        if (token) {
-            next();
-        } else {
-            oktaAuth.tokenManager.clear();
-            router.push('/login');
-        }          
+        router.push('/profile/' + grantType);
     })
     .catch(console.error);
 }
