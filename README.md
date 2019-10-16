@@ -2,6 +2,8 @@ This repo let's you see the OAuth 2.0 Implicit flow and the Authorization Code w
 
 The Implicit flow is effectively deprecated and should no longer be used.
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 You need a free [Okta Developer Org](https://developer.okta.con/signup) to get started.
 
 In the admin console of your Okta org, Navigate to: **Applications**
