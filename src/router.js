@@ -12,7 +12,7 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     { path: '/', name: 'home', component: Home },
-    { path: '/callback', component: callback },
+    { path: '/authorization-code/callback', component: callback },
     { path: '/profile', redirect: '/profile/authorization_code' },
     { path: '/profile/:mode', beforeEnter: validateAccess, component: Profile },
     { path: '/logout', component: logout }

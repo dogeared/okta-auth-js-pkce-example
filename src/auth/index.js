@@ -1,9 +1,9 @@
 import OktaAuth from '@okta/okta-auth-js';
 import router from '../router';
 
-const ISSUER = 'https://{yourOktaDomain}/oauth2/default';
-const CLIENT_ID = '{yourSPAAppClientId}';
-const REDIRECT_URL = window.location.origin + '/callback';
+const ISSUER = process.env.VUE_APP_OKTA_CLIENT_ORGURL + '/oauth2/default';
+const CLIENT_ID = process.env.VUE_APP_OKTA_OAUTH2_CLIENT_ID;
+const REDIRECT_URL = window.location.origin + '/authorization-code/callback';
 
 const AUTH_CODE_GRANT_TYPE = 'authorization_code';
 const IMPLICIT_GRANT_TYPE = 'implicit';
