@@ -2,7 +2,7 @@ import OktaAuth from '@okta/okta-auth-js';
 import router from '../router';
 
 const ISSUER = process.env.VUE_APP_OKTA_CLIENT_ORGURL + '/oauth2/default';
-const CLIENT_ID = process.env.VUE_APP_OKTA_OAUTH2_CLIENT_ID;
+const CLIENT_ID = process.env.VUE_APP_OKTA_OAUTH2_CLIENT_ID_SPA;
 const REDIRECT_URL = window.location.origin + '/authorization-code/callback';
 
 const AUTH_CODE_GRANT_TYPE = 'authorization_code';
