@@ -21,6 +21,9 @@ export default {
       hasIdToken: false
     }
   },
+  updated: async function () {
+    this.hasIdToken = await getIdToken();
+  },
   mounted: async function () {
     this.hasIdToken = await getIdToken();
   }
